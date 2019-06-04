@@ -280,7 +280,7 @@ public class IndianCity {
 }
 ```
 
-### IndianCityGenerator
+### IndianCityGenerator class
 
 ```java
 public class IndianCityGenerator {
@@ -316,7 +316,8 @@ public class IndianCityGenerator {
 }
 ```
 
-### 
+### TestIndianCityGenerator class
+
 ```java
 @isTest
 public class TestIndianCityGenerator {
