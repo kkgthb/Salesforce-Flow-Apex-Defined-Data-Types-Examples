@@ -8,7 +8,7 @@ Many thanks to [Ultimate Courses's public API directory](https://github.com/publ
 
 ## HTTPMockFactory class
 
-You'll need this class for all 3 examples
+You'll need this class for any of the examples.  _(Each example also has 3 more classes you need to create, including a unit test to run, and some Anonymous Apex to execute.)_
 
 ```java
 public class HTTPMockFactory implements HttpCalloutMock {
@@ -53,6 +53,8 @@ YesNo always returns JSON-formatted text representing _just one_ object with 3 p
 
 ### YesNo class
 
+This class allows YesNo to be used as a Flow Variable data type.
+
 ```java
 public class YesNo {
     @AuraEnabled @InvocableVariable public String answer;
@@ -62,6 +64,8 @@ public class YesNo {
 ```
 
 ### YesNoGenerator class
+
+This class allows getYesNo(), a.k.a. "Get YesNo," to be used as an Invocable Apex Method in a Flow.
 
 ```java
 public class YesNoGenerator {
@@ -163,6 +167,8 @@ But possible!  Play at your own risk.
 
 ### AllCaps class
 
+This class allows AllCaps to be used as a Flow Variable data type.
+
 ```java
 public class AllCaps {
     @AuraEnabled @InvocableVariable public String input;
@@ -171,6 +177,10 @@ public class AllCaps {
 ```
 
 ### AllCapsGenerator class
+
+This class allows getAllCaps(), a.k.a. "All-Caps Your Text (INSECURE HTTP ONLY)," to be used as an Invocable Apex Method in a Flow.
+
+Note that despite appearances, when invoked, it should be passed a single text-typed Flow Variable, not a "collection" / "multiple values"-enabled text-typed Flow Variable.
 
 ```java
 public class AllCapsGenerator {
@@ -272,6 +282,8 @@ Indian Cities always returns JSON-formatted text representing _a **list** of obj
 
 ### IndianCity class
 
+This class allows IndianCity to be used as a Flow Variable data type.
+
 ```java
 public class IndianCity {
     @AuraEnabled @InvocableVariable public String city;
@@ -281,6 +293,8 @@ public class IndianCity {
 ```
 
 ### IndianCityGenerator class
+
+This class allows getIndianCity(), a.k.a. "Get Random Indian City," to be used as an Invocable Apex Method in a Flow.
 
 ```java
 public class IndianCityGenerator {
