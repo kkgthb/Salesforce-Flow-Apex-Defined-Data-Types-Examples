@@ -121,7 +121,7 @@ Line: 1, Column: 1
 System.AssertException: Assertion Failed: YesNo:[answer=yes, forced=false, image=https://yesno.wtf/assets/yes/3-422e51268d64d78241720a7de52fe121.gif]
 ```
 
-If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
+If you get this error, you need to enable making callouts to https://yesno.wtf/api in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
 
 ```
 Line: 14, Column: 1
@@ -320,7 +320,7 @@ Line: 1, Column: 1
 System.AssertException: Assertion Failed: IndianCity:[city=Tuljapur, district=Osmanabad, state=Maharashtra]
 ```
 
-If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
+If you get this error, you need to enable making callouts to https://indian-cities-api-nocbegfhqg.now.sh/cities in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
 
 ```
 Line: 17, Column: 1
