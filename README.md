@@ -41,7 +41,15 @@ public class HTTPMockFactory implements HttpCalloutMock {
 
 Return a random yes/no/maybe, and accompanying image, thanks to https://yesno.wtf/#api.
 
-YesNo always returns JSON-formatted text representing _just one_ object with 3 properties.
+YesNo always returns JSON-formatted text representing _just one_ object with 3 properties, like this:
+
+```json
+{
+    "answer":"no",
+    "forced":false,
+    "image":"https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif"
+}
+```
 
 ### YesNo class
 
@@ -136,7 +144,14 @@ System.CalloutException: Unauthorized endpoint, please check Setup->Security->Re
 
 Uppercase your input text, thanks to http://shoutcloud.io
 
-Shouting As A Service always returns JSON-formatted text representing _just one_ object with 2 properties.
+Shouting As A Service always returns JSON-formatted text representing _just one_ object with 2 properties, like this:
+
+```json
+{
+    "INPUT":"helloWorld",
+    "OUTPUT":"HELLOWORLD"
+}
+```
 
 **Security warning:**  this service is not available over HTTPS.
 
@@ -238,7 +253,22 @@ System.CalloutException: Unauthorized endpoint, please check Setup->Security->Re
 
 Return a random Indian city thanks to https://indian-cities-api-nocbegfhqg.now.sh/
 
-Indian Cities always returns JSON-formatted text representing _a **list** of objects_ with 3 properties _apiece_.
+Indian Cities always returns JSON-formatted text representing _a **list** of objects_ with 3 properties _apiece_, like this:
+
+```json
+[
+    {
+        "City":"Shansha",
+        "State":"HimachalPradesh",
+        "District":"Lahual"
+    },
+    {
+        "City":"Kardang",
+        "State":"HimachalPradesh",
+        "District":"Lahual"
+    }
+]
+```
 
 ### IndianCity class
 
