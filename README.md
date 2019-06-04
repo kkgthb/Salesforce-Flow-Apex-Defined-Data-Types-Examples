@@ -39,7 +39,9 @@ public class HTTPMockFactory implements HttpCalloutMock {
 
 ## YesNo
 
-Return a random yes/no/maybe, and accompanying image, thanks to https://yesno.wtf/#api
+Return a random yes/no/maybe, and accompanying image, thanks to https://yesno.wtf/#api.
+
+YesNo always returns JSON-formatted text representing _just one_ object with 3 properties.
 
 ### YesNo class
 
@@ -133,6 +135,8 @@ System.CalloutException: Unauthorized endpoint, please check Setup->Security->Re
 ## SHOUTING AS A SERVICE
 
 Uppercase your input text, thanks to http://shoutcloud.io
+
+Shouting As A Service always returns JSON-formatted text representing _just one_ object with 2 properties.
 
 **Security warning:**  this service is not available over HTTPS.
 
@@ -233,6 +237,8 @@ System.CalloutException: Unauthorized endpoint, please check Setup->Security->Re
 ## Indian Cities
 
 Return a random Indian city thanks to https://indian-cities-api-nocbegfhqg.now.sh/
+
+Indian Cities always returns JSON-formatted text representing _a **list** of objects_ with 3 properties _apiece_.
 
 ### IndianCity class
 
