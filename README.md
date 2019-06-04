@@ -200,7 +200,7 @@ Line: 1, Column: 1
 System.AssertException: Assertion Failed: AllCaps:[input=hi, output=HI]
 ```
 
-If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home)
+If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
 
 ```
 Line: 16, Column: 1
