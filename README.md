@@ -107,6 +107,27 @@ public class TestYesNoGenerator {
 }
 ```
 
+
+### Anonymous Apex for actually testing the yes/no/maybe API live
+
+```java
+System.assert(FALSE, YesNoGenerator.getYesNo()[0]);
+```
+
+You're expecting an error message with a random city, something along the lines of:
+
+```
+Line: 1, Column: 1
+System.AssertException: Assertion Failed: YesNo:[answer=yes, forced=false, image=https://yesno.wtf/assets/yes/3-422e51268d64d78241720a7de52fe121.gif]
+```
+
+If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
+
+```
+Line: 14, Column: 1
+System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = https://yesno.wtf/api
+```
+
 ---
 
 ## SHOUTING AS A SERVICE
@@ -187,7 +208,7 @@ public class TestAllCapsGenerator {
 }
 ```
 
-### Anonymous Apex for actually testing the API live
+### Anonymous Apex for actually testing the shouting API live
 
 ```java
 System.assert(FALSE, AllCapsGenerator.getAllCaps(new List<String>{('hi')})[0]);
@@ -285,3 +306,24 @@ public class TestIndianCityGenerator {
     }
 }
 ```
+
+### Anonymous Apex for actually testing the cities API live
+
+```java
+System.assert(FALSE, IndianCityGenerator.getIndianCity()[0]);
+```
+
+You're expecting an error message with a random city, something along the lines of:
+
+```
+Line: 1, Column: 1
+System.AssertException: Assertion Failed: IndianCity:[city=Tuljapur, district=Osmanabad, state=Maharashtra]
+```
+
+If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home):
+
+```
+Line: 17, Column: 1
+System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = https://indian-cities-api-nocbegfhqg.now.sh/cities
+```
+
