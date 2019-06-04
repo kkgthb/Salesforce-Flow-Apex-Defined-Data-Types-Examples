@@ -39,6 +39,8 @@ public class HTTPMockFactory implements HttpCalloutMock {
 
 ## YesNo
 
+Return a random yes/no/maybe, and accompanying image, thanks to https://yesno.wtf/#api
+
 ### YesNo class
 
 ```java
@@ -109,6 +111,16 @@ public class TestYesNoGenerator {
 
 ## SHOUTING AS A SERVICE
 
+Uppercase your input text, thanks to http://shoutcloud.io
+
+**Security warning:**  this service is not available over HTTPS.
+
+It is _quite_ possible for anyone on the internet to intercept the response from Shouting As A Service and replace it with a virus before it gets back to you.
+
+Likely?  Probably not.
+
+But possible!  Play at your own risk.
+
 ### AllCaps class
 
 ```java
@@ -173,6 +185,26 @@ public class TestAllCapsGenerator {
         System.assertEquals('HELLO WORLD',returnedAC.output);
     }
 }
+```
+
+### Anonymous Apex for actually testing the API live
+
+```java
+System.assert(FALSE, AllCapsGenerator.getAllCaps(new List<String>{('hi')})[0]);
+```
+
+You're expecting an error message of:
+
+```
+Line: 1, Column: 1
+System.AssertException: Assertion Failed: AllCaps:[input=hi, output=HI]
+```
+
+If you get this error, you need to enable making callouts to http://api.shoutcloud.io/V1/SHOUT in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home)
+
+```
+Line: 16, Column: 1
+System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = http://api.shoutcloud.io/V1/SHOUT
 ```
 
 ---
