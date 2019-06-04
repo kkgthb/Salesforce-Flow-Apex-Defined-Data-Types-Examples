@@ -51,7 +51,7 @@ public class IndianCity {
 
 ### IndianCityGenerator
 
-```
+```java
 public class IndianCityGenerator {
     
     private static List<IndianCity> allIndianCities = new List<IndianCity>();
