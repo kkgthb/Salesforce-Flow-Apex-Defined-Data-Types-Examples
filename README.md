@@ -67,6 +67,8 @@ public class YesNo {
 
 This class allows getYesNo(), a.k.a. "Get YesNo," to be used as an Invocable Apex Method in a Flow.
 
+Contrary to intuition, Flow seems to "`[0]`" its return value and treat it as a single returned object.
+
 ```java
 public class YesNoGenerator {
     @InvocableMethod(label='Get YesNo' description='Returns a response from the public API YesNo.wtf')
@@ -180,7 +182,9 @@ public class AllCaps {
 
 This class allows getAllCaps(), a.k.a. "All-Caps Your Text (INSECURE HTTP ONLY)," to be used as an Invocable Apex Method in a Flow.
 
-Note that despite appearances, when invoked, it should be passed a single text-typed Flow Variable, not a "collection" / "multiple values"-enabled text-typed Flow Variable.
+Contrary to intuition, Flow seems to "`[0]`" its return value and treat it as a single returned object.
+
+Similarly, when invoked, it should be passed a single text-typed Flow Variable, not a "collection" / "multiple values"-enabled text-typed Flow Variable.
 
 ```java
 public class AllCapsGenerator {
@@ -283,6 +287,8 @@ Indian Cities always returns JSON-formatted text representing _a **list** of obj
 ### IndianCity class
 
 This class allows IndianCity to be used as a Flow Variable data type.
+
+Contrary to intuition, Flow seems to "`[0]`" its return value and treat it as a single returned object.
 
 ```java
 public class IndianCity {
