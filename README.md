@@ -4,7 +4,7 @@ Contained within is a bit more Apex code to support my blog [Katie Kodes](https:
 
 This is to help Salesforce Developers play around with Apex-Defined Data Types for Salesforce Flow, as used for calling out to HTTP APIs, in a bit more depth than is presented at [Tutorial: Flow Apex-Defined Data Types for Salesforce Admins](https://katiekodes.com/flow-apex-defined-data-types/).
 
-Many thanks to [this public API directory](https://github.com/public-apis/public-apis) for helping me find the examples.
+Many thanks to [this public API directory](https://github.com/public-apis/public-apis) for helping me find the 3 examples _(YesNo, Shouting As A Service, and Indian Cities)_.
 
 ## HTTPMockFactory class
 
@@ -34,6 +34,8 @@ public class HTTPMockFactory implements HttpCalloutMock {
     }
 }
 ```
+
+---
 
 ## Indian City generator
 
@@ -111,3 +113,6 @@ public class TestIndianCityGenerator {
     }
 }
 ```
+
+---
+
