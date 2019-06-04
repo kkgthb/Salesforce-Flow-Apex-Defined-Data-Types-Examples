@@ -37,7 +37,147 @@ public class HTTPMockFactory implements HttpCalloutMock {
 
 ---
 
-## Indian City generator
+## YesNo
+
+### YesNo class
+
+```java
+public class YesNo {
+    @AuraEnabled @InvocableVariable public String answer;
+    @AuraEnabled @InvocableVariable public Boolean forced;
+    @AuraEnabled @InvocableVariable public String image;
+}
+```
+
+### YesNoGenerator class
+
+```java
+public class YesNoGenerator {
+    @InvocableMethod(label='Get YesNo' description='Returns a response from the public API YesNo.wtf')
+    public static List<YesNo> getYesNo() {
+        List<YesNo> yesNo = new List<YesNo>{getRandomYesNo()};
+        return yesNo;
+    }
+    
+    private static YesNo getRandomYesNo() {
+        YesNo yn = new YesNo();
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://yesno.wtf/api');
+        request.setMethod('GET');
+        HttpResponse response = http.send(request);
+        // If the request is successful, parse the JSON response.
+        if (response.getStatusCode() == 200) {
+            // Deserialize the JSON string into collections of primitive data types.
+            yn = (YesNo)JSON.deserialize(response.getBody(), YesNo.class);
+        }
+        return yn;
+    }
+}
+```
+
+### TestYesNoGenerator class
+
+```java
+@isTest
+public class TestYesNoGenerator {
+    static testMethod void testYesNoGenerator() {
+        HttpMockFactory mock = new HttpMockFactory(
+            200, 
+            'OK', 
+            '{'+
+            '"answer":"no"'
+            +','
+            +'"forced":false'
+            +','
+            +'"image":"https://yesno.wtf/assets/no/10-d5ddf3f82134e781c1175614c0d2bab2.gif"'
+            +'}', 
+            new Map<String,String>()
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        List<YesNo> returnedYNs = YesNoGenerator.getYesNo();
+        Test.stopTest();
+        System.assert(!returnedYNs.isEmpty());
+        YesNo returnedYN = returnedYNs[0];
+        System.assertEquals('no',returnedYN.answer);
+    }
+}
+```
+
+---
+
+## SHOUTING AS A SERVICE
+
+### AllCaps class
+
+```java
+public class AllCaps {
+    @AuraEnabled @InvocableVariable public String input;
+    @AuraEnabled @InvocableVariable public String output;
+}
+```
+
+### AllCapsGenerator class
+
+```java
+public class AllCapsGenerator {
+    @InvocableMethod(label='All-Caps Your Text (INSECURE HTTP ONLY)' description='Returns a response from the public API Shouting As A Service (INSECURE HTTP)')
+    public static List<AllCaps> getAllCaps(List<String> inputText) {
+        List<AllCaps> acText = new List<AllCaps>{getCapitalizedInputText(inputText[0])};
+        return acText;
+    }
+    
+    private static AllCaps getCapitalizedInputText(String inputString) {
+        AllCaps ac = new AllCaps();
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('http://api.shoutcloud.io/V1/SHOUT'); // SECURITY VULNERABILITIES BECAUSE NOT AVAILABLE OVER HTTPS!  RUN AT YOUR OWN RISK!
+        request.setMethod('POST');
+        request.setHeader('Content-Type','application/json');
+        request.setBody('{"INPUT":"'+inputString+'"}');
+        HttpResponse response = http.send(request);
+        // If the request is successful, parse the JSON response.
+        if (response.getStatusCode() == 200) {
+            // Deserialize the JSON string into collections of primitive data types.
+            ac = (AllCaps)JSON.deserialize(response.getBody(), AllCaps.class);
+        }
+        return ac;
+    }
+}
+```
+
+### TestAllCapsGenerator class
+
+```java
+@isTest
+public class TestAllCapsGenerator {
+    static testMethod void testAllCapsGenerator() {
+        String fixedInput = 'hello World';
+        HttpMockFactory mock = new HttpMockFactory(
+            200, 
+            'OK', 
+            '{'+
+            '"INPUT": "hello World"'
+            +','
+            +'"OUTPUT": "HELLO WORLD"'
+            +'}', 
+            new Map<String,String>()
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        List<AllCaps> returnedACs = AllCapsGenerator.getAllCaps(new List<String>{fixedInput});
+        Test.stopTest();
+        System.assert(!returnedACs.isEmpty());
+        AllCaps returnedAC = returnedACs[0];
+        System.assertEquals('HELLO WORLD',returnedAC.output);
+    }
+}
+```
+
+---
+
+## Indian Cities
 
 Return a random Indian city thanks to https://indian-cities-api-nocbegfhqg.now.sh/
 
@@ -113,6 +253,3 @@ public class TestIndianCityGenerator {
     }
 }
 ```
-
----
-
