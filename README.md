@@ -2,7 +2,7 @@
 
 Contained within is a bit more Apex code to support my blog [Katie Kodes](https://katiekodes.com).
 
-This is to help Salesforce Developers play around with Apex-Defined Data Types for Salesforce Flow, as used for calling out to HTTP APIs, in a bit more depth than is presented at my companion blog article:
+This is to help Salesforce Developers play around with Apex-Defined Data Types for Salesforce Flow, as used for calling out to HTTP APIs, in a bit more depth than is presented at my companion blog article, which I recommend reading first:
 
 > [Tutorial: Flow Apex-Defined Data Types for Salesforce Admins](https://katiekodes.com/flow-apex-defined-data-types/)
 
