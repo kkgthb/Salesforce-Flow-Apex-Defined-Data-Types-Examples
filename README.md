@@ -67,7 +67,7 @@ public class YesNo {
 
 This class allows getYesNo(), a.k.a. "Get YesNo," to be used as an Invocable Apex Method in a Flow.
 
-Contrary to intuition, Flow seems to "`[0]`" its return value and treat it as a single returned object.
+Flow seems to effectively "`[0]`" its return value and treat it as a single returned object -- hence declaring the return type of `getYesNo()` to be a `List` of `YesNo`s rather than a single `YesNo`.
 
 ```java
 public class YesNoGenerator {
@@ -130,7 +130,7 @@ public class TestYesNoGenerator {
 System.assert(FALSE, YesNoGenerator.getYesNo()[0]);
 ```
 
-You're expecting an error message with a random city, something along the lines of:
+You're expecting an error message with a Yes/No/Maybe and a GIF URL; something along the lines of:
 
 ```
 Line: 1, Column: 1
@@ -182,7 +182,7 @@ public class AllCaps {
 
 This class allows getAllCaps(), a.k.a. "All-Caps Your Text (INSECURE HTTP ONLY)," to be used as an Invocable Apex Method in a Flow.
 
-Contrary to intuition, Flow seems to "`[0]`" its return value and treat it as a single returned object.
+Again, flow seems to effectively "`[0]`" invocable methods' return values, so return a `List` of whatever you actually want to pass back to the flow.
 
 Similarly, when invoked, it should be passed a single text-typed Flow Variable, not a "collection" / "multiple values"-enabled text-typed Flow Variable.
 
@@ -288,7 +288,7 @@ Indian Cities always returns JSON-formatted text representing _a **list** of obj
 
 This class allows IndianCity to be used as a Flow Variable data type.
 
-Contrary to intuition, Flow seems to "`[0]`" its return value and treat it as a single returned object.
+Again, flow seems to effectively "`[0]`" invocable methods' return values, so return a `List` of whatever you actually want to pass back to the flow.
 
 ```java
 public class IndianCity {
