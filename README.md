@@ -6,7 +6,7 @@ This is to help Salesforce Developers play around with Apex-Defined Data Types f
 
 > [Tutorial: Flow Apex-Defined Data Types for Salesforce Admins](https://katiekodes.com/flow-apex-defined-data-types/)
 
-Many thanks to [Ultimate Courses's public API directory](https://github.com/public-apis/public-apis) for helping me find the 4 examples _([YesNo](#yesno), [Shouting As A Service](#shouting-as-a-service), [Indian Cities](#indian-cities))_, and [U.S. Zip Codes By City](#zip-codes-for-a-us-city).
+Many thanks to [Ultimate Courses's public API directory](https://github.com/public-apis/public-apis) for helping me find the 4 examples _([YesNo](#yesno), [Shouting As A Service](#shouting-as-a-service), [Indian Cities](#indian-cities), and [U.S. Zip Codes By City](#zip-codes-for-a-us-city))_.
 
 ## HTTPMockFactory class
 
