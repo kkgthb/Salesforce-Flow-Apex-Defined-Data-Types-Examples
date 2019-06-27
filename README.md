@@ -6,13 +6,11 @@ This is to help Salesforce Developers play around with Apex-Defined Data Types f
 
 > [Tutorial: Flow Apex-Defined Data Types for Salesforce Admins](https://katiekodes.com/flow-apex-defined-data-types/)
 
-Many thanks to [Ultimate Courses's public API directory](https://github.com/public-apis/public-apis) for helping me find the 3 examples _([YesNo](#yesno), [Shouting As A Service](#shouting-as-a-service), and [Indian Cities](#indian-cities))_.
-
-_(Want to help me add a 4th example?  See [my bug here](#still-debugging--zip-codes-for-a-us-city-new-62719) and [Tweet Me](https://twitter.com/KatieKodes) your thoughts.)_
+Many thanks to [Ultimate Courses's public API directory](https://github.com/public-apis/public-apis) for helping me find the 4 examples _([YesNo](#yesno), [Shouting As A Service](#shouting-as-a-service), [Indian Cities](#indian-cities))_, and [U.S. Zip Codes By City](#zip-codes-for-a-us-city).
 
 ## HTTPMockFactory class
 
-You'll need this class for any of the examples.  _(Each example also has 3 more classes you need to create, including a unit test to run, and some Anonymous Apex to execute.)_
+You'll need this class for any of the examples.  _(Each example also has 3-4 more classes you need to create, including a unit test to run, and some Anonymous Apex to execute.)_
 
 ```java
 public class HTTPMockFactory implements HttpCalloutMock {
