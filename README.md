@@ -443,6 +443,18 @@ To simplify things, in this example, we'll hard-code the "live" HTTP request to 
 
 We'll do a "mock" in our test class with Moorhead, Minnesota just to make sure we didn't over-tailor our code to Mankato.
 
+The code here will support an admin generating a flow that produces text like this:
+
+```
+Beloit
+WI
+
+53511
+53512
+```
+
+Of note is that it's the **admin's** responsibility to build out a complex Flow that loops over the zip codes and produces this `53511<br/>53512` content.
+
 ### CityZip class
 
 This class allows CityZip to be used as a Flow Variable data type.
