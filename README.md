@@ -427,7 +427,7 @@ For example, http://api.zippopotam.us/us/mn/Saint%20Paul returns data from 3 Min
 ```json
 {
   "country abbreviation": "US",
-  "places": [LOTS OF ZIPS FROM "Saint Paul Park," "South Saint Paul," "Saint Paul," etc.],
+  "places": ["LOTS OF ZIPS FROM Saint Paul Park, South Saint Paul, Saint Paul, etc."],
   "country": "United States",
   "place name": "Saint Paul Park",
   "state": "Minnesota",
@@ -572,4 +572,182 @@ If you get this error, you need to enable making callouts to https://api.zippopo
 ```
 Line: 14, Column: 1
 System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = https://api.zippopotam.us/us/mn/mankato
+```
+
+Finally, you need an admin to build a flow to put this data on a screen.
+
+The 3 previous examples are all variations on [Tutorial: Flow Apex-Defined Data Types for Salesforce Admins](https://katiekodes.com/flow-apex-defined-data-types/), but this one is a little different.
+
+There's nothing that can be added to a Screen element in Flow Builder that natively displays "repeating" or "list-like" data in an attractive fashion.
+
+A relatively simple workaround to this problem, with credit to [Jen Lee's "Build A Search Tool Using Flow"](https://jenwlee.wordpress.com/2017/05/30/build-a-search-tool-using-flow/), is to use a Loop element to populate the contents of a single Text-typed variable by concatenating elements of each record in a list with the HTML line break `<br/>` between them.
+
+I'll screenshot the whole process for a "part 2" blog post at a later date, but for now, here's the XML-formatted code I downloaded from my demo org as `MyFirstFlow.flow-meta.xml`.  When it's run, its output is a simple:
+
+```
+Mankato
+MN
+
+56001
+56002
+56003
+56006
+```
+
+Import it into your org, open the new Flow it creates, and give it a run!
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Get_City</name>
+        <label>Get City</label>
+        <locationX>149</locationX>
+        <locationY>50</locationY>
+        <actionName>CityZipGenerator</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Dump_myCity_Places_Into_Standalone_placeList</targetReference>
+        </connector>
+        <outputParameters>
+            <assignToReference>myCity.country</assignToReference>
+            <name>country</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>myCity.countryabbreviation</assignToReference>
+            <name>countryabbreviation</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>myCity.placename</assignToReference>
+            <name>placename</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>myCity.places</assignToReference>
+            <name>places</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>myCity.state</assignToReference>
+            <name>state</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>myCity.stateabbreviation</assignToReference>
+            <name>stateabbreviation</name>
+        </outputParameters>
+    </actionCalls>
+    <assignments>
+        <name>Add_to_allZipCodesAsText_from_Template_RenderCurPlaceDetail</name>
+        <label>Add to allZipCodesAsText from Template RenderCurPlaceDetail</label>
+        <locationX>390</locationX>
+        <locationY>192</locationY>
+        <assignmentItems>
+            <assignToReference>allZipCodesAsText</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>RenderCurPlaceDetail</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Populate_allZipCodesAsText_from_placeList</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Dump_myCity_Places_Into_Standalone_placeList</name>
+        <label>Dump myCity.Places Into Standalone placeList</label>
+        <locationX>256</locationX>
+        <locationY>50</locationY>
+        <assignmentItems>
+            <assignToReference>placeList</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>myCity.places</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Populate_allZipCodesAsText_from_placeList</targetReference>
+        </connector>
+    </assignments>
+    <interviewLabel>MyFirstFlow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>MyFirstFlow</label>
+    <loops>
+        <name>Populate_allZipCodesAsText_from_placeList</name>
+        <label>Populate allZipCodesAsText from placeList</label>
+        <locationX>389</locationX>
+        <locationY>50</locationY>
+        <assignNextValueToReference>curPlace</assignNextValueToReference>
+        <collectionReference>placeList</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Add_to_allZipCodesAsText_from_Template_RenderCurPlaceDetail</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>City_Screen</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>City_Screen</name>
+        <label>City Screen</label>
+        <locationX>554</locationX>
+        <locationY>49</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>showInfoAboutCity</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;{!myCity.placename}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;{!myCity.stateabbreviation}&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;{!allZipCodesAsText}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <startElementReference>Get_City</startElementReference>
+    <status>Draft</status>
+    <textTemplates>
+        <name>RenderCurPlaceDetail</name>
+        <text>{!allZipCodesAsText}{!curPlace.postcode}&lt;br/&gt;</text>
+    </textTemplates>
+    <variables>
+        <name>allZipCodesAsText</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>curPlace</name>
+        <apexClass>Place</apexClass>
+        <dataType>Apex</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>myCity</name>
+        <apexClass>CityZip</apexClass>
+        <dataType>Apex</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>placeList</name>
+        <apexClass>Place</apexClass>
+        <dataType>Apex</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
 ```
