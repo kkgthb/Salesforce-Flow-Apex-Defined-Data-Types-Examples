@@ -8,6 +8,8 @@ This is to help Salesforce Developers play around with Apex-Defined Data Types f
 
 Many thanks to [Ultimate Courses's public API directory](https://github.com/public-apis/public-apis) for helping me find the 3 examples _([YesNo](#yesno), [Shouting As A Service](#shouting-as-a-service), and [Indian Cities](#indian-cities))_.
 
+_(Want to help me add a 4th example?  See [my bug here](#still-debugging--zip-codes-for-a-us-city-new-62719) and [Tweet Me](https://twitter.com/KatieKodes) your thoughts.)_
+
 ## HTTPMockFactory class
 
 You'll need this class for any of the examples.  _(Each example also has 3 more classes you need to create, including a unit test to run, and some Anonymous Apex to execute.)_
@@ -488,7 +490,13 @@ Outputs:
 {!aYesNo.forced} = forced (false)
 ```
 
-Fellow devs:  any thoughts on why `myCity` is gacking when `aYesNo` is not?
+One hint about what's going on with `myCity` versus `aYesNo` is that if I exit Flow Builder and re-open the flow, the `{!myCity.state_abbreviation}` I put into the Display Text of my Screen has changed to `{!{!myCity}.{state_abbreviation}}`.
+
+The same thing also happens if I wrap `{!myCity.state_abbreviation}` inside a Text Template.
+
+What I can't figure out is how to stop Flow from doing this.
+
+Fellow devs:  any thoughts on how to stop `myCity` from misbehaving?
 
 ### Background
 
