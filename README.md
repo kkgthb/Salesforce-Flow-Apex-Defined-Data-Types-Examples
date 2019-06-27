@@ -386,3 +386,257 @@ Line: 17, Column: 1
 System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = https://indian-cities-api-nocbegfhqg.now.sh/cities
 ```
 
+
+---
+
+## STILL DEBUGGING:  Zip Codes for a U.S. City
+
+### PROBLEM:
+
+I can't quite get this one to actually work in a Flow.  I'm trying to imitate [Salesforce's official video demo of Apex-Defined Data Types (from 12:53 to 19:29)](https://www.youtube.com/watch?v=oU0y38yf5qw&t=766) and Alex Edelstein's accompanying "Unofficial Salesforce" blog posts parts [1](https://unofficialsf.com/part-1-manipulate-complex-internet-data-in-flow-without-code/) & [2](https://unofficialsf.com/part-2-manipulate-complex-internet-data-in-flow-without-code/) and [video](https://www.youtube.com/watch?v=3xH1YLh5L7s), but I just cannot, for the life of me, actually get this Apex-Defined Data Type working in a Flow like the others.
+
+In theory, I should be able to create an Apex Action in Flow that calls `CityZipGenerator.getCityZip()` _(a.k.a. `Get CityZip Mankato`)_ and assigns the output to a `CityZip`-typed Apex-Defined Variable called `myCity`, with the following subcomponents:
+
+- `country` gets mapped to `{!myCity.country}`
+- `country_abbreviation` gets mapped to `{!myCity.country_abbreviation}`
+- `place_name` gets mapped to `{!myCity.place_name}`
+- `places` gets mapped to `{!myCity.places}`
+- `state` gets mapped to `{!myCity.state}`
+- `state_abbreviation` gets mapped to `{!myCity.state_abbreviation}`
+
+I should be able to set up a Screen with Display Text rendering `{!myCity.state_abbreviation}` and, when I run my flow, I should see this:
+
+```
+MN
+```
+
+But instead, I see this:
+
+```
+{!{
+"state_abbreviation" : "MN",
+"state" : "Minnesota",
+"places" : [ {
+"post_code" : "56001",
+"place_name" : "Mankato",
+"longitude" : "-93.996",
+"latitude" : "44.1538"
+}, {
+"post_code" : "56002",
+"place_name" : "Mankato",
+"longitude" : "-94.0698",
+"latitude" : "44.056"
+}, {
+"post_code" : "56003",
+"place_name" : "Mankato",
+"longitude" : "-94.0942",
+"latitude" : "44.2172"
+}, {
+"post_code" : "56006",
+"place_name" : "Mankato",
+"longitude" : "-94.0698",
+"latitude" : "44.056"
+} ],
+"place_name" : "Mankato",
+"country_abbreviation" : "US",
+"country" : "United States"
+}.{state_abbreviation}}
+```
+
+Even if I remove this mapping from the Apex Action's output:
+
+- `places` to `{!myCity.places}`
+
+I still get this when I run the Flow:
+
+```
+{!{
+"state_abbreviation" : "MN",
+"state" : "Minnesota",
+"place_name" : "Mankato",
+"country_abbreviation" : "US",
+"country" : "United States"
+}.{state_abbreviation}}
+```
+
+The "Debug Details" for this flow don't look terribly different from a successful "Yes/No/Maybe" flow...
+
+```
+CITYZIPGENERATOR (APEX): Grab_Zips
+Inputs:
+None.
+Outputs:
+{!myCity.state} = state (Minnesota)
+{!myCity.place_name} = place_name (Mankato)
+{!myCity.state_abbreviation} = state_abbreviation (MN)
+{!myCity.country} = country (United States)
+{!myCity.places} = places ([Place : { "post_code" : "56001", "place_name" : "Mankato", "longitude" : "-93.996", "latitude" : "44.1538" },Place : { "post_code" : "56002", "place_name" : "Mankato", "longitude" : "-94.0698", "latitude" : "44.056" },Place : { "post_code" : "56003", "place_name" : "Mankato", "longitude" : "-94.0942", "latitude" : "44.2172" },Place : { "post_code" : "56006", "place_name" : "Mankato", "longitude" : "-94.0698", "latitude" : "44.056" }])
+{!myCity.country_abbreviation} = country_abbreviation (US)
+```
+
+```
+YESNOGENERATOR (APEX): Get_YesNo
+Inputs:
+None.
+Outputs:
+{!aYesNo.answer} = answer (yes)
+{!aYesNo.image} = image (https://yesno.wtf/assets/yes/8-2f93962e2ab24427df8589131da01a4d.gif)
+{!aYesNo.forced} = forced (false)
+```
+
+Fellow devs:  any thoughts on why `myCity` is gacking when `aYesNo` is not?
+
+### Background
+
+Return all zip codes for a U.S. city thanks to https://zippopotam.us
+
+_(In this case, we'll hard-code the "live" HTTP request to always ask about Mankato, Minnesota, rather than dealing with cleaning up user input.  We'll do a "mock" in our test class with Moorhead, Minnesota just to make sure we didn't over-engineer for the city of Mankato.)_
+
+Zippopotamus always returns JSON-formatted text with a more complex, nested structure than we've seen before, like this call to https://api.zippopotam.us/us/wi/beloit indicating the 2 ZIP codes used for the city of Beloit, Wisconsin, USA:
+
+```json
+{
+  "country abbreviation": "US",
+  "places": [
+    {
+      "place name": "Beloit",
+      "longitude": "-89.086",
+      "post code": "53511",
+      "latitude": "42.562"
+    },
+    {
+      "place name": "Beloit",
+      "longitude": "-89.0728",
+      "post code": "53512",
+      "latitude": "42.6698"
+    }
+  ],
+  "country": "United States",
+  "place name": "Beloit",
+  "state": "Wisconsin",
+  "state abbreviation": "WI"
+}
+```
+
+### CityZip class
+
+This class allows CityZip to be used as a Flow Variable data type.
+
+```java
+public class CityZip {
+	@AuraEnabled @InvocableVariable public String country_abbreviation;
+	@AuraEnabled @InvocableVariable public List<Place> places;
+	@AuraEnabled @InvocableVariable public String country;
+	@AuraEnabled @InvocableVariable public String place_name;
+	@AuraEnabled @InvocableVariable public String state;
+	@AuraEnabled @InvocableVariable public String state_abbreviation;
+}
+```
+
+### Place class
+
+However, we also had a list of objects embedded in the JSON under the key `places`.
+
+I decided to call an Apex class that could be used to represent one of these objects `Place`.  `CityZipPlace` would have done just as nicely, though.
+
+`Place` needs to be an "outer," standalone Apex class, not an "inner," nested class inside `CityZip`, so that `Place` can be seen by Flow.
+
+```java
+public class Place {
+    @AuraEnabled @InvocableVariable public String place_name;
+    @AuraEnabled @InvocableVariable public String longitude;
+    @AuraEnabled @InvocableVariable public String post_code;
+    @AuraEnabled @InvocableVariable public String latitude;
+}
+```
+
+### CityZipGenerator class
+
+This class allows getCityZip(), a.k.a. "Get CityZip Mankato," to be used as an Invocable Apex Method in a Flow.
+
+Again, flow seems to effectively "`[0]`" invocable methods' return values, so return a `List` of whatever you actually want to pass back to the flow.
+
+```java
+public class CityZipGenerator {
+    private static Pattern spaceInJSONKey = pattern.compile('(?<="[a-z]+) (?=[a-z]+": )');
+    
+    @InvocableMethod(label='Get CityZip Mankato' description='Returns a response about Mankato from the public API Zippopotam.us')
+    public static List<CityZip> getCityZip() {
+        List<CityZip> czs = new List<CityZip>{getMankatoCityZip()};
+        return czs;
+    }
+    
+    private static CityZip getMankatoCityZip() {
+        CityZip cz = new CityZip();
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://api.zippopotam.us/us/mn/mankato');
+        request.setMethod('GET');
+        HttpResponse response = http.send(request);
+        // If the request is successful, parse the JSON response.
+        if (response.getStatusCode() == 200) {
+            // Deserialize the JSON string into collections of primitive data types.
+            cz = (CityZip)JSON.deserialize(
+                spaceInJSONKey.matcher(response.getBody()).replaceAll('_'),
+                CityZip.class
+            );
+        }
+        return cz;
+    }
+}
+```
+
+### TestCityZipGenerator class
+
+```java
+@isTest
+public class TestCityZipGenerator {
+    static testMethod void testCityZipGenerator() {
+        HttpMockFactory mock = new HttpMockFactory(
+            200, 
+            'OK', 
+            '{"country abbreviation": "US", "places": '+
+            '[{"place name": "Moorhead", "longitude": "-96.7572", '+
+            '"post code": "56560", "latitude": "46.8677"}, '+
+            '{"place name": "Moorhead", "longitude": "-96.5062", '+
+            '"post code": "56561", "latitude": "46.89"}, '+
+            '{"place name": "Moorhead", "longitude": "-96.5062", '+
+            '"post code": "56562", "latitude": "46.89"}, '+
+            '{"place name": "Moorhead", "longitude": "-96.5062", '+
+            '"post code": "56563", "latitude": "46.89"}], '+
+            '"country": "United States", "place name": "Moorhead", '+
+            '"state": "Minnesota", "state abbreviation": "MN"}', 
+            new Map<String,String>()
+        );
+        Test.setMock(HttpCalloutMock.class, mock);
+        Test.startTest();
+        List<CityZip> returnedCZs = CityZipGenerator.getCityZip();
+        Test.stopTest();
+        System.assert(!returnedCZs.isEmpty());
+        CityZip returnedCZ = returnedCZs[0];
+        System.assertEquals('MN',returnedCZ.state_abbreviation);
+        System.assertEquals('Moorhead',returnedCZ.place_name);
+        System.assert(returnedCZ.places[2].post_code.startsWith('5656'));
+    }
+}
+```
+
+### Anonymous Apex for actually testing the Zippopotam.us API live
+
+```java
+System.assert(FALSE, CityZipGenerator.getCityZip()[0]);
+```
+
+You're expecting an error message with information about Mankato, Minnesota, USA; something along the lines of:
+
+```
+Line: 1, Column: 1
+System.AssertException: Assertion Failed: CityZip:[country=United States, country_abbreviation=US, place_name=Mankato, places=(Place:[latitude=44.1538, longitude=-93.996, place_name=Mankato, post_code=56001], Place:[latitude=44.056, longitude=-94.0698, place_name=Mankato, post_code=56002], Place:[latitude=44.2172, longitude=-94.0942, place_name=Mankato, post_code=56003], Place:[latitude=44.056, longitude=-94.0698, place_name=Mankato, post_code=56006]), state=Minnesota, state_abbreviation=MN]
+```
+
+If you get this error, you need to enable making callouts to https://api.zippopotam.us in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home) _(note that you can chop off `/us/mn/mankato`)_:
+
+```
+Line: 14, Column: 1
+System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = https://api.zippopotam.us/us/mn/mankato
+```
