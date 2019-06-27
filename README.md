@@ -388,10 +388,9 @@ Line: 17, Column: 1
 System.CalloutException: Unauthorized endpoint, please check Setup->Security->Remote site settings. endpoint = https://indian-cities-api-nocbegfhqg.now.sh/cities
 ```
 
-
 ---
 
-## Zip Codes for a U.S. City (new 6/27/19)
+## Zip Codes for a U.S. City
 
 Inspired by Alex Edelstein's [official Salesforce video demo of Apex-Defined Data Types (from 12:53 to 19:29)](https://www.youtube.com/watch?v=oU0y38yf5qw&t=766) and his accompanying "Unofficial Salesforce" blog posts parts [1](https://unofficialsf.com/part-1-manipulate-complex-internet-data-in-flow-without-code/) & [2](https://unofficialsf.com/part-2-manipulate-complex-internet-data-in-flow-without-code/) and [video](https://www.youtube.com/watch?v=3xH1YLh5L7s), I decided to add one more example here that leverages Apex-Defined Data Types the way Salesforce _intended_ them to work:  with the parsing of "nested inner JSON classes" handed over to administrators within Flow, rather than being done by developers within Apex.
 
