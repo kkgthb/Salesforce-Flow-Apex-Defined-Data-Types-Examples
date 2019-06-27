@@ -389,11 +389,15 @@ System.CalloutException: Unauthorized endpoint, please check Setup->Security->Re
 
 ---
 
-## STILL DEBUGGING:  Zip Codes for a U.S. City
+## STILL DEBUGGING:  Zip Codes for a U.S. City (new 6/27/19)
 
 ### PROBLEM:
 
-I can't quite get this one to actually work in a Flow.  I'm trying to imitate [Salesforce's official video demo of Apex-Defined Data Types (from 12:53 to 19:29)](https://www.youtube.com/watch?v=oU0y38yf5qw&t=766) and Alex Edelstein's accompanying "Unofficial Salesforce" blog posts parts [1](https://unofficialsf.com/part-1-manipulate-complex-internet-data-in-flow-without-code/) & [2](https://unofficialsf.com/part-2-manipulate-complex-internet-data-in-flow-without-code/) and [video](https://www.youtube.com/watch?v=3xH1YLh5L7s), but I just cannot, for the life of me, actually get this Apex-Defined Data Type working in a Flow like the others.
+I can't quite get this one to actually work in a Flow.  I'm trying to imitate [Salesforce's official video demo of Apex-Defined Data Types (from 12:53 to 19:29)](https://www.youtube.com/watch?v=oU0y38yf5qw&t=766) and Alex Edelstein's accompanying "Unofficial Salesforce" blog posts parts [1](https://unofficialsf.com/part-1-manipulate-complex-internet-data-in-flow-without-code/) & [2](https://unofficialsf.com/part-2-manipulate-complex-internet-data-in-flow-without-code/) and [video](https://www.youtube.com/watch?v=3xH1YLh5L7s).
+
+Unfortunately, I haven't yet gotten this Apex-Defined Data Type working in a Flow like the others.
+
+Have you made it work?  Any tips?
 
 In theory, I should be able to create an Apex Action in Flow that calls `CityZipGenerator.getCityZip()` _(a.k.a. `Get CityZip Mankato`)_ and assigns the output to a `CityZip`-typed Apex-Defined Variable called `myCity`, with the following subcomponents:
 
