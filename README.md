@@ -391,120 +391,13 @@ System.CalloutException: Unauthorized endpoint, please check Setup->Security->Re
 
 ---
 
-## STILL DEBUGGING:  Zip Codes for a U.S. City (new 6/27/19)
+## Zip Codes for a U.S. City (new 6/27/19)
 
-### PROBLEM:
+Inspired by Alex Edelstein's [official Salesforce video demo of Apex-Defined Data Types (from 12:53 to 19:29)](https://www.youtube.com/watch?v=oU0y38yf5qw&t=766) and his accompanying "Unofficial Salesforce" blog posts parts [1](https://unofficialsf.com/part-1-manipulate-complex-internet-data-in-flow-without-code/) & [2](https://unofficialsf.com/part-2-manipulate-complex-internet-data-in-flow-without-code/) and [video](https://www.youtube.com/watch?v=3xH1YLh5L7s), I decided to add one more example here that leverages Apex-Defined Data Types the way Salesforce _intended_ them to work:  with the parsing of "nested inner JSON classes" handed over to administrators within Flow, rather than being done by developers within Apex.
 
-I can't quite get this one to actually work in a Flow.  I'm trying to imitate [Salesforce's official video demo of Apex-Defined Data Types (from 12:53 to 19:29)](https://www.youtube.com/watch?v=oU0y38yf5qw&t=766) and Alex Edelstein's accompanying "Unofficial Salesforce" blog posts parts [1](https://unofficialsf.com/part-1-manipulate-complex-internet-data-in-flow-without-code/) & [2](https://unofficialsf.com/part-2-manipulate-complex-internet-data-in-flow-without-code/) and [video](https://www.youtube.com/watch?v=3xH1YLh5L7s).
+For this example, I chose an API from https://zippopotam.us that, provided a country like `us` and a state abbreviation like `wi` and a phrase like `beloit`, can search for all cities in that state containing the phrase `beloit` and return all zip codes assigned to Beloit, Wisconsin, USA.
 
-Unfortunately, I haven't yet gotten this Apex-Defined Data Type working in a Flow like the others.
-
-Have you made it work?  Any tips?
-
-In theory, I should be able to create an Apex Action in Flow that calls `CityZipGenerator.getCityZip()` _(a.k.a. `Get CityZip Mankato`)_ and assigns the output to a `CityZip`-typed Apex-Defined Variable called `myCity`, with the following subcomponents:
-
-- `country` gets mapped to `{!myCity.country}`
-- `country_abbreviation` gets mapped to `{!myCity.country_abbreviation}`
-- `place_name` gets mapped to `{!myCity.place_name}`
-- `places` gets mapped to `{!myCity.places}`
-- `state` gets mapped to `{!myCity.state}`
-- `state_abbreviation` gets mapped to `{!myCity.state_abbreviation}`
-
-I should be able to set up a Screen with Display Text rendering `{!myCity.state_abbreviation}` and, when I run my flow, I should see this:
-
-```
-MN
-```
-
-But instead, I see this:
-
-```
-{!{
-"state_abbreviation" : "MN",
-"state" : "Minnesota",
-"places" : [ {
-"post_code" : "56001",
-"place_name" : "Mankato",
-"longitude" : "-93.996",
-"latitude" : "44.1538"
-}, {
-"post_code" : "56002",
-"place_name" : "Mankato",
-"longitude" : "-94.0698",
-"latitude" : "44.056"
-}, {
-"post_code" : "56003",
-"place_name" : "Mankato",
-"longitude" : "-94.0942",
-"latitude" : "44.2172"
-}, {
-"post_code" : "56006",
-"place_name" : "Mankato",
-"longitude" : "-94.0698",
-"latitude" : "44.056"
-} ],
-"place_name" : "Mankato",
-"country_abbreviation" : "US",
-"country" : "United States"
-}.{state_abbreviation}}
-```
-
-Even if I remove this mapping from the Apex Action's output:
-
-- `places` to `{!myCity.places}`
-
-I still get this when I run the Flow:
-
-```
-{!{
-"state_abbreviation" : "MN",
-"state" : "Minnesota",
-"place_name" : "Mankato",
-"country_abbreviation" : "US",
-"country" : "United States"
-}.{state_abbreviation}}
-```
-
-The "Debug Details" for this flow don't look terribly different from a successful "Yes/No/Maybe" flow...
-
-```
-CITYZIPGENERATOR (APEX): Grab_Zips
-Inputs:
-None.
-Outputs:
-{!myCity.state} = state (Minnesota)
-{!myCity.place_name} = place_name (Mankato)
-{!myCity.state_abbreviation} = state_abbreviation (MN)
-{!myCity.country} = country (United States)
-{!myCity.places} = places ([Place : { "post_code" : "56001", "place_name" : "Mankato", "longitude" : "-93.996", "latitude" : "44.1538" },Place : { "post_code" : "56002", "place_name" : "Mankato", "longitude" : "-94.0698", "latitude" : "44.056" },Place : { "post_code" : "56003", "place_name" : "Mankato", "longitude" : "-94.0942", "latitude" : "44.2172" },Place : { "post_code" : "56006", "place_name" : "Mankato", "longitude" : "-94.0698", "latitude" : "44.056" }])
-{!myCity.country_abbreviation} = country_abbreviation (US)
-```
-
-```
-YESNOGENERATOR (APEX): Get_YesNo
-Inputs:
-None.
-Outputs:
-{!aYesNo.answer} = answer (yes)
-{!aYesNo.image} = image (https://yesno.wtf/assets/yes/8-2f93962e2ab24427df8589131da01a4d.gif)
-{!aYesNo.forced} = forced (false)
-```
-
-One hint about what's going on with `myCity` versus `aYesNo` is that if I exit Flow Builder and re-open the flow, the `{!myCity.state_abbreviation}` I put into the Display Text of my Screen has changed to `{!{!myCity}.{state_abbreviation}}`.
-
-The same thing also happens if I wrap `{!myCity.state_abbreviation}` inside a Text Template.
-
-What I can't figure out is how to stop Flow from doing this.
-
-Fellow devs:  any thoughts on how to stop `myCity` from misbehaving?
-
-### Background
-
-Return all zip codes for a U.S. city thanks to https://zippopotam.us
-
-_(In this case, we'll hard-code the "live" HTTP request to always ask about Mankato, Minnesota, rather than dealing with cleaning up user input.  We'll do a "mock" in our test class with Moorhead, Minnesota just to make sure we didn't over-engineer for the city of Mankato.)_
-
-Zippopotamus always returns JSON-formatted text with a more complex, nested structure than we've seen before, like this call to https://api.zippopotam.us/us/wi/beloit indicating the 2 ZIP codes used for the city of Beloit, Wisconsin, USA:
+Zippopotamus always returns JSON-formatted text with a more complex, nested structure than we've seen before, like this call to https://api.zippopotam.us/us/wi/beloit:
 
 ```json
 {
@@ -530,18 +423,43 @@ Zippopotamus always returns JSON-formatted text with a more complex, nested stru
 }
 ```
 
+Of course, we could build a sophisticated tool that lets users enter their own city, state, and country, but there're a lot of issues to handle that I'd rather not go into.
+
+For example, http://api.zippopotam.us/us/mn/Saint%20Paul returns data from 3 Minnesota cities containing `Saint Paul` in their names, the largest of which is Saint Paul itself, but attributes the overall list to the small suburb of Saint Paul Park:
+
+```json
+{
+  "country abbreviation": "US",
+  "places": [LOTS OF ZIPS FROM "Saint Paul Park," "South Saint Paul," "Saint Paul," etc.],
+  "country": "United States",
+  "place name": "Saint Paul Park",
+  "state": "Minnesota",
+  "state abbreviation": "MN"
+}
+```
+
+Trying to search any city in France gets nasty quickly because the results are overwhelmingly filled with [CEDEX](https://en.wikipedia.org/wiki/Postal_codes_in_France#CEDEX) fake zip codes for businesses.
+
+Obviously, this might not be the right API for you to use in real life!
+
+To simplify things, in this example, we'll hard-code the "live" HTTP request to always ask about Mankato, Minnesota.
+
+We'll do a "mock" in our test class with Moorhead, Minnesota just to make sure we didn't over-tailor our code to Mankato.
+
 ### CityZip class
 
 This class allows CityZip to be used as a Flow Variable data type.
 
+Be sure to avoid using underscores in the variable names -- Flow produces errors if you do.
+
 ```java
 public class CityZip {
-	@AuraEnabled @InvocableVariable public String country_abbreviation;
+	@AuraEnabled @InvocableVariable public String countryabbreviation;
 	@AuraEnabled @InvocableVariable public List<Place> places;
 	@AuraEnabled @InvocableVariable public String country;
-	@AuraEnabled @InvocableVariable public String place_name;
+	@AuraEnabled @InvocableVariable public String placename;
 	@AuraEnabled @InvocableVariable public String state;
-	@AuraEnabled @InvocableVariable public String state_abbreviation;
+	@AuraEnabled @InvocableVariable public String stateabbreviation;
 }
 ```
 
@@ -553,11 +471,13 @@ I decided to call an Apex class that could be used to represent one of these obj
 
 `Place` needs to be an "outer," standalone Apex class, not an "inner," nested class inside `CityZip`, so that `Place` can be seen by Flow.
 
+Be sure to avoid using underscores in the variable names -- Flow produces errors if you do.
+
 ```java
 public class Place {
-    @AuraEnabled @InvocableVariable public String place_name;
+    @AuraEnabled @InvocableVariable public String placename;
     @AuraEnabled @InvocableVariable public String longitude;
-    @AuraEnabled @InvocableVariable public String post_code;
+    @AuraEnabled @InvocableVariable public String postcode;
     @AuraEnabled @InvocableVariable public String latitude;
 }
 ```
@@ -567,6 +487,10 @@ public class Place {
 This class allows getCityZip(), a.k.a. "Get CityZip Mankato," to be used as an Invocable Apex Method in a Flow.
 
 Again, flow seems to effectively "`[0]`" invocable methods' return values, so return a `List` of whatever you actually want to pass back to the flow.
+
+Note our use of a Regular Expression replacement to eliminate any spaces in the JSON "keys," since we can't put spaces into the Apex-Defined Data Type attribute names to which we're deserializing.
+
+_(At first I tried replacing the spaces with underscores for clarity, but it turns out Flow doesn't like variable names with underscores in them.)_
 
 ```java
 public class CityZipGenerator {
@@ -589,7 +513,7 @@ public class CityZipGenerator {
         if (response.getStatusCode() == 200) {
             // Deserialize the JSON string into collections of primitive data types.
             cz = (CityZip)JSON.deserialize(
-                spaceInJSONKey.matcher(response.getBody()).replaceAll('_'),
+                spaceInJSONKey.matcher(response.getBody()).replaceAll(''),
                 CityZip.class
             );
         }
@@ -626,9 +550,9 @@ public class TestCityZipGenerator {
         Test.stopTest();
         System.assert(!returnedCZs.isEmpty());
         CityZip returnedCZ = returnedCZs[0];
-        System.assertEquals('MN',returnedCZ.state_abbreviation);
-        System.assertEquals('Moorhead',returnedCZ.place_name);
-        System.assert(returnedCZ.places[2].post_code.startsWith('5656'));
+        System.assertEquals('MN',returnedCZ.stateabbreviation);
+        System.assertEquals('Moorhead',returnedCZ.placename);
+        System.assert(returnedCZ.places[2].postcode.startsWith('5656'));
     }
 }
 ```
@@ -643,7 +567,7 @@ You're expecting an error message with information about Mankato, Minnesota, USA
 
 ```
 Line: 1, Column: 1
-System.AssertException: Assertion Failed: CityZip:[country=United States, country_abbreviation=US, place_name=Mankato, places=(Place:[latitude=44.1538, longitude=-93.996, place_name=Mankato, post_code=56001], Place:[latitude=44.056, longitude=-94.0698, place_name=Mankato, post_code=56002], Place:[latitude=44.2172, longitude=-94.0942, place_name=Mankato, post_code=56003], Place:[latitude=44.056, longitude=-94.0698, place_name=Mankato, post_code=56006]), state=Minnesota, state_abbreviation=MN]
+System.AssertException: Assertion Failed: CityZip:[country=United States, countryabbreviation=US, placename=Mankato, places=(Place:[latitude=44.1538, longitude=-93.996, placename=Mankato, postcode=56001], Place:[latitude=44.056, longitude=-94.0698, placename=Mankato, postcode=56002], Place:[latitude=44.2172, longitude=-94.0942, placename=Mankato, postcode=56003], Place:[latitude=44.056, longitude=-94.0698, placename=Mankato, postcode=56006]), state=Minnesota, stateabbreviation=MN]
 ```
 
 If you get this error, you need to enable making callouts to https://api.zippopotam.us in your org's [Remote Site Settings](https://login.salesforce.com/one/one.app#/setup/SecurityRemoteProxy/home) _(note that you can chop off `/us/mn/mankato`)_:
