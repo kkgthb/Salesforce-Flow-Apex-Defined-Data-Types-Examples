@@ -177,6 +177,8 @@ This class allows AllCaps to be used as a Flow Variable data type.
 public class AllCaps {
     @AuraEnabled @InvocableVariable public String input;
     @AuraEnabled @InvocableVariable public String output;
+    
+    public AllCaps() {} // Needed for unit test code coverage
 }
 ```
 
@@ -240,6 +242,10 @@ public class TestAllCapsGenerator {
         AllCaps returnedAC = returnedACs[0];
         System.assertEquals('HELLO WORLD',returnedAC.output);
     }
+    
+    static testMethod void codeCoverageForAttributeOnlyClasses() {
+        AllCaps theAllCaps = new AllCaps();
+    }
 }
 ```
 
@@ -297,6 +303,8 @@ public class IndianCity {
     @AuraEnabled @InvocableVariable public String city;
     @AuraEnabled @InvocableVariable public String state;
     @AuraEnabled @InvocableVariable public String district;
+    
+    public IndianCity() {} // Needed for unit test code coverage
 }
 ```
 
@@ -362,6 +370,10 @@ public class TestIndianCityGenerator {
         IndianCity returnedCity = returnedCities[0];
         System.assert(String.isNotEmpty(returnedCity.city));
         System.assert('Shansha|Kardang'.contains(returnedCity.city));
+    }
+    
+    static testMethod void codeCoverageForAttributeOnlyClasses() {
+        IndianCity theIndianCity = new IndianCity();
     }
 }
 ```
@@ -463,12 +475,14 @@ Be sure to avoid using underscores in the variable names -- Flow produces errors
 
 ```java
 public class CityZip {
-	@AuraEnabled @InvocableVariable public String countryabbreviation;
-	@AuraEnabled @InvocableVariable public List<Place> places;
-	@AuraEnabled @InvocableVariable public String country;
-	@AuraEnabled @InvocableVariable public String placename;
-	@AuraEnabled @InvocableVariable public String state;
-	@AuraEnabled @InvocableVariable public String stateabbreviation;
+    @AuraEnabled @InvocableVariable public String countryabbreviation;
+    @AuraEnabled @InvocableVariable public List<Place> places;
+    @AuraEnabled @InvocableVariable public String country;
+    @AuraEnabled @InvocableVariable public String placename;
+    @AuraEnabled @InvocableVariable public String state;
+    @AuraEnabled @InvocableVariable public String stateabbreviation;
+    
+    public CityZip() {} // Needed for unit test code coverage
 }
 ```
 
@@ -488,6 +502,8 @@ public class Place {
     @AuraEnabled @InvocableVariable public String longitude;
     @AuraEnabled @InvocableVariable public String postcode;
     @AuraEnabled @InvocableVariable public String latitude;
+    
+    public Place() {} // Needed for unit test code coverage
 }
 ```
 
@@ -562,6 +578,11 @@ public class TestCityZipGenerator {
         System.assertEquals('MN',returnedCZ.stateabbreviation);
         System.assertEquals('Moorhead',returnedCZ.placename);
         System.assert(returnedCZ.places[2].postcode.startsWith('5656'));
+    }
+    
+    static testMethod void codeCoverageForAttributeOnlyClasses() {
+        CityZip theCityZip = new CityZip();
+        Place thePlace = new Place();
     }
 }
 ```
